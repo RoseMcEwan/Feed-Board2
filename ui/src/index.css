@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/* FeedBoard's design system. Tailwind's spacing scale already uses --spacing.
+   Colours live here, not in individual JSX files. Breakpoints use one unit (rem). */
+@theme {
+  --color-*: initial;
+  --color-brand: #2f6f3e;
+  --color-brand-dark: #184d31;
+  --color-brand-soft: #e7eddb;
+  --color-brand-subtle: #eef4e6;
+  --color-canvas: #faf8f1;
+  --color-surface: #ffffff;
+  --color-subtle: #fafbf6;
+  --color-wash: #f0f3e8;
+  --color-navigation: #f4f3e9;
+  --color-auth-panel: #e9eedc;
+  --color-ink: #425046;
+  --color-heading: #355632;
+  --color-muted: #69766f;
+  --color-faint: #859080;
+  --color-inverse: #ffffff;
+  --color-inverse-muted: #d7e5cd;
+  --color-line: #e8e4d8;
+  --color-line-subtle: #edf0e7;
+  --color-control: #d9ded3;
+  --color-control-hover: #9dac92;
+  --color-accent-line: #b5c6a8;
+  --color-danger: #9a3131;
+  --color-danger-soft: #fff1ec;
+  --color-danger-line: #eac0b0;
+  --color-warning: #775820;
+  --color-warning-soft: #fff6e5;
+  --color-warning-line: #ead9b4;
+  --color-success: #285739;
+  --color-success-soft: #edf6e7;
+  --color-success-line: #d1e2c6;
+  --color-info-soft: #f0f5e9;
+  --color-info-line: #dce5d5;
+  --color-focus: #8aad69;
+  --color-crop: #a18b47;
+  --color-overlay: #182f2866;
+  --color-green-herd: #4e793c;
+  --color-green-herd-soft: #eef3e6;
+  --color-blue-accent: #3c80bf;
+  --color-blue-herd: #477ea8;
+  --color-blue-herd-soft: #edf3f8;
+  --color-amber-herd: #a67a2e;
+  --color-amber-herd-soft: #f9f4e6;
+  --color-purple-herd: #8463a7;
+  --color-purple-herd-soft: #f5eff9;
+  --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --text-micro: 0.625rem;
+  --text-tiny: 0.6875rem;
+  --text-caption: 0.8125rem;
+  --text-body: 0.9375rem;
+  --text-section: 1.375rem;
+  --text-metric: 1.625rem;
+  --text-page: clamp(1.875rem, 3vw, 2.5rem);
+  --text-hero: clamp(2.5rem, 4vw, 4.125rem);
+  --radius-control: 0.5rem;
+  --radius-panel: 0.625rem;
+  --radius-card: 0.75rem;
+  --radius-dialog: 0.875rem;
+  --spacing-control: 2.8125rem;
+  --spacing-sidebar: 14.875rem;
+  --container-mobile: 20rem;
+  --container-setup-nav: 14rem;
+  --container-setup-nav-wide: 17.5rem;
+  --container-workspace: 95.625rem;
+  --container-dialog: 46.25rem;
+  --container-schedule: 15rem;
+  --container-break: 11rem;
+  --shadow-dialog: 0 1.25rem 5rem #17311d33;
+  --shadow-selection: 0 0.25rem 0.625rem #2f6f3e14;
+  --breakpoint-xs: 30rem;
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-md: 51.25rem;
+  --breakpoint-lg: 68.75rem;
+  --breakpoint-xl: 78.125rem;
+}
+
+/* Dynamic herd colours are data, not dynamically constructed Tailwind class names.
+   Inline theme aliases make the utilities resolve on the element using them. */
+@theme inline {
+  --color-herd: var(--herd-colour, var(--color-green-herd));
+  --color-herd-accent: var(--herd-accent, var(--color-brand));
+  --color-herd-soft: var(--herd-soft, var(--color-green-herd-soft));
+}
+
+@layer base {
+  html { color-scheme: light; }
+  body {
+    min-width: var(--container-mobile);
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    color: var(--color-brand-dark);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+  }
+  h1 { font-size: var(--text-page); }
+  h2 { font-size: var(--text-section); margin-bottom: calc(var(--spacing) * 4); }
+  h3 { font-size: var(--text-lg); margin-bottom: calc(var(--spacing) * 4); }
+  p { margin-bottom: calc(var(--spacing) * 4); }
+  a { color: var(--color-brand); text-underline-offset: calc(var(--spacing) * 0.75); }
+  button, select, summary { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.5; }
+  svg { flex-shrink: 0; }
+  :where(button, input, select, textarea, a, summary, [tabindex]):focus-visible {
+    outline: calc(var(--spacing) * 0.75) solid var(--color-focus);
+    outline-offset: calc(var(--spacing) * 0.75);
+  }
+  /* Tailwind's reset removes the native dialog margin. Keep dialogs centred. */
+  dialog { margin: auto; }
+  [data-herd-colour] {
+    --herd-accent: var(--color-brand);
+    --herd-colour: var(--color-green-herd);
+    --herd-soft: var(--color-green-herd-soft);
+  }
+  [data-herd-colour="blue"] {
+    --herd-accent: var(--color-blue-accent);
+    --herd-colour: var(--color-blue-herd);
+    --herd-soft: var(--color-blue-herd-soft);
+  }
+  [data-herd-colour="amber"] {
+    --herd-accent: var(--color-amber-herd);
+    --herd-colour: var(--color-amber-herd);
+    --herd-soft: var(--color-amber-herd-soft);
+  }
+  [data-herd-colour="purple"] {
+    --herd-accent: var(--color-purple-herd);
+    --herd-colour: var(--color-purple-herd);
+    --herd-soft: var(--color-purple-herd-soft);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Native progress pseudo-elements are clearer here than repeated utility strings. */
+@layer components {
+  .setup-progress {
+    appearance: none;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: var(--color-control);
+    color: var(--color-green-herd);
+  }
+  .setup-progress::-webkit-progress-bar {
+    background: var(--color-control);
+    border-radius: var(--radius-sm);
+  }
+  .setup-progress::-webkit-progress-value {
+    background: var(--color-green-herd);
+    border-radius: var(--radius-sm);
+  }
+  .setup-progress::-moz-progress-bar { background: var(--color-green-herd); }
+}
