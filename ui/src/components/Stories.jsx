@@ -4,6 +4,7 @@ import Notice from "./Notice.jsx";
 import Brand from "./Brand.jsx";
 import FormActions from "./FormActions.jsx";
 import HerdTitle from "./HerdTitle.jsx"
+import Metric from "./Metric.jsx";
 
 export function Stories() {
   return (
@@ -147,6 +148,39 @@ export function Stories() {
       colour: "blue",
     }}
   />
+</section>
+
+{/*   METRIC    */}
+<section className="space-y-4">
+  <h2>Metrics</h2>
+
+  <div className="grid gap-4 sm:grid-cols-3">
+    <Metric
+      label="Pasture intake"
+      value="14.2"
+      unit="kgDM/cow/day"
+    />
+
+    <Metric
+      label="Feed difference"
+      value="-2.1"
+      unit="kgDM/cow/day"
+      tone="warning"
+    />
+  </div>
+
+  <div>
+    <h3 className="mb-3">
+      Compact on mobile
+    </h3>
+
+    <Metric
+      label="Days remaining"
+      value="34"
+      unit="days"
+      compactOnMobile
+    />
+  </div>
 </section>
     </section>
   );
