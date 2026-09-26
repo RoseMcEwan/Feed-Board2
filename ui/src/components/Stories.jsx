@@ -1,15 +1,16 @@
 import Button from "./button/Button.jsx";
 import Card from "./Card.jsx";
 import Notice from "./Notice.jsx";
+import Brand from "./Brand.jsx";
 
 export function Stories() {
   return (
     <section>
       {/*   BUTTON     */}
       <section>
-        <h1> Button: </h1>
+        <h2> Button: </h2>
         <div className="flex flex-wrap gap-4">
-          <h2>Colour, border and emphasis </h2>
+          <h3>Colour, border and emphasis </h3>
           <Button variant="primary">Primary</Button>
 
           <Button variant="secondary">Secondary</Button>
@@ -20,7 +21,7 @@ export function Stories() {
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-4">
-          <h2>Size </h2>
+          <h3>Size </h3>
           <Button size="small">Small</Button>
 
           <Button size="medium">Medium</Button>
@@ -29,38 +30,38 @@ export function Stories() {
         </div>
 
         <div className="mt-6 flex flex-wrap gap-4">
-          <h2>Disable </h2>
+          <h3>Disable </h3>
           <Button variant="primary" disabled>
             Disabled
           </Button>
         </div>
       </section>
       {/*   CARD     */}
-      <h1 className="mt-10"> Card:</h1>
+      <h2 className="mt-6"> Card:</h2>
       <section>
         <div className="grid gap-4 md:grid-cols-5">
-          <h2>Cards</h2>
+          <h3>Varients:</h3>
           <Card variant="surface">
-            <h3 className="text-lg font-semibold">surface</h3>
+            <h4 className="text-lg font-semibold">surface</h4>
           </Card>
 
           <Card variant="subtle">
-            <h3 className="text-lg font-semibold">subtle</h3>
+            <h4 className="text-lg font-semibold">subtle</h4>
           </Card>
 
           <Card variant="info">
-            <h3 className="text-lg font-semibold">info</h3>
+            <h4 className="text-lg font-semibold">info</h4>
           </Card>
 
           <Card variant="dashed">
-            <h3 className="text-lg font-semibold">dashed (add / empty)</h3>
+            <h4 className="text-lg font-semibold">dashed (add / empty)</h4>
           </Card>
         </div>
       </section>
 
       <section>
         <div className="grid gap-4 md:grid-cols-5">
-          <h2>Card padding</h2>
+          <h3>Padding:</h3>
           <Card padding="normal">Normal</Card>
 
           <Card padding="small">Small</Card>
@@ -105,6 +106,14 @@ export function Stories() {
           </Notice>
         </div>
       </section>
+{/*   BRAND    */}
+    <section className="space-y-6">
+  <h2>Brand:</h2>
+
+  <div>
+    <Brand />
+  </div>
+</section>
     </section>
   );
 }
