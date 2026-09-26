@@ -3,6 +3,7 @@ import Card from "./Card.jsx";
 import Notice from "./Notice.jsx";
 import Brand from "./Brand.jsx";
 import FormActions from "./FormActions.jsx";
+import HerdTitle from "./HerdTitle.jsx"
 
 export function Stories() {
   return (
@@ -115,7 +116,7 @@ export function Stories() {
           <Brand />
         </div>
       </section>
-
+{/*   FORM ACTIONS    */}
       <section className="space-y-6">
         <h2>Form actions</h2>
 
@@ -136,6 +137,17 @@ export function Stories() {
           </FormActions>
         </div>
       </section>
+{/*   HERD TITLE    */}
+<section className="space-y-4">
+  <h2>Herd titles</h2>
+  <HerdTitle
+    herd={{
+      name: "Mixed age",
+      animals: 210,
+      colour: "blue",
+    }}
+  />
+</section>
     </section>
   );
 }
