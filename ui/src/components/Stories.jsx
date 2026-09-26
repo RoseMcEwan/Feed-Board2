@@ -6,6 +6,7 @@ import FormActions from "./FormActions.jsx";
 import HerdTitle from "./HerdTitle.jsx"
 import Metric from "./Metric.jsx";
 import PageHeader from "./PageHeader.jsx";
+import DataTable, { TableHeader, TableCell } from "./DataTable.jsx";
 
 function StorySection({ title, children }) {
   return (
@@ -259,6 +260,38 @@ export function Stories() {
           </PageHeader>
         </StoryRow>
       </StorySection>
+
+      {/* DATA TABLE */}
+<StorySection title="Data table">
+  <StoryRow title="Standard">
+    <DataTable
+      label="Example paddock table"
+      caption="Example paddock names and hectares"
+    >
+      <thead>
+        <tr>
+          <TableHeader>Paddock</TableHeader>
+          <TableHeader>Hectares</TableHeader>
+          <TableHeader>Type</TableHeader>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <TableCell>Front</TableCell>
+          <TableCell>4.5</TableCell>
+          <TableCell>Pasture</TableCell>
+        </tr>
+
+        <tr>
+          <TableCell>River</TableCell>
+          <TableCell>3.2</TableCell>
+          <TableCell>Crop</TableCell>
+        </tr>
+      </tbody>
+    </DataTable>
+  </StoryRow>
+</StorySection>
 
     </div> 
   );
