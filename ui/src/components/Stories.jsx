@@ -5,184 +5,262 @@ import Brand from "./Brand.jsx";
 import FormActions from "./FormActions.jsx";
 import HerdTitle from "./HerdTitle.jsx"
 import Metric from "./Metric.jsx";
+import PageHeader from "./PageHeader.jsx";
+
+function StorySection({ title, children }) {
+  return (
+    <section className="border-b border-line py-8">
+      <h2 className="mb-6 text-2xl font-bold text-brand-dark">
+        {title}
+      </h2>
+
+      <div className="space-y-6">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function StoryRow({ title, children }) {
+  return (
+    <div className="grid gap-3 md:grid-cols-[12rem_1fr] md:gap-6">
+      <h3 className="m-0 text-base font-semibold text-blue-accent">
+        {title}
+      </h3>
+
+      <div className="min-w-0">
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function Stories() {
   return (
-    <section>
-      {/*   BUTTON     */}
-      <section>
-        <h2> Button: </h2>
-        <div className="flex flex-wrap gap-4">
-          <h3>Colour, border and emphasis </h3>
-          <Button variant="primary">Primary</Button>
+    <div className="mx-auto max-w-6xl px-6">
 
-          <Button variant="secondary">Secondary</Button>
+      {/* BUTTON */}
+      <StorySection title="Button">
+        <StoryRow title="Colour, border and emphasis">
+          <div className="flex flex-wrap gap-4">
+            <Button variant="primary">
+              Primary
+            </Button>
 
-          <Button variant="danger">Delete</Button>
+            <Button variant="secondary">
+              Secondary
+            </Button>
 
-          <Button variant="text">Cancel</Button>
-        </div>
+            <Button variant="danger">
+              Delete
+            </Button>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4">
-          <h3>Size </h3>
-          <Button size="small">Small</Button>
+            <Button variant="text">
+              Cancel
+            </Button>
+          </div>
+        </StoryRow>
 
-          <Button size="medium">Medium</Button>
+        <StoryRow title="Size">
+          <div className="flex flex-wrap items-center gap-4">
+            <Button size="small">
+              Small
+            </Button>
 
-          <Button size="large">Large</Button>
-        </div>
+            <Button size="medium">
+              Medium
+            </Button>
 
-        <div className="mt-6 flex flex-wrap gap-4">
-          <h3>Disable </h3>
+            <Button size="large">
+              Large
+            </Button>
+          </div>
+        </StoryRow>
+
+        <StoryRow title="Disabled">
           <Button variant="primary" disabled>
             Disabled
           </Button>
-        </div>
-      </section>
-      {/*   CARD     */}
-      <h2 className="mt-6"> Card:</h2>
-      <section>
-        <div className="grid gap-4 md:grid-cols-5">
-          <h3>Varients:</h3>
-          <Card variant="surface">
-            <h4 className="text-lg font-semibold">surface</h4>
-          </Card>
+        </StoryRow>
+      </StorySection>
 
-          <Card variant="subtle">
-            <h4 className="text-lg font-semibold">subtle</h4>
-          </Card>
 
-          <Card variant="info">
-            <h4 className="text-lg font-semibold">info</h4>
-          </Card>
+      {/* CARD */}
+      <StorySection title="Card">
+        <StoryRow title="Variants">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Card variant="surface">
+              Surface
+            </Card>
 
-          <Card variant="dashed">
-            <h4 className="text-lg font-semibold">dashed (add / empty)</h4>
-          </Card>
-        </div>
-      </section>
+            <Card variant="subtle">
+              Subtle
+            </Card>
 
-      <section>
-        <div className="grid gap-4 md:grid-cols-5">
-          <h3>Padding:</h3>
-          <Card padding="normal">Normal</Card>
+            <Card variant="info">
+              Info
+            </Card>
 
-          <Card padding="small">Small</Card>
+            <Card variant="dashed">
+              Dashed
+            </Card>
+          </div>
+        </StoryRow>
 
-          <Card padding="none">
-            <div className="p-4">None</div>
-          </Card>
-        </div>
-      </section>
+        <StoryRow title="Padding">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card padding="normal">
+              Normal
+            </Card>
 
-      {/*   NOTICE    */}
-      <section className="space-y-6">
-        <h2>Notice:</h2>
+            <Card padding="small">
+              Small
+            </Card>
 
-        <Notice variant="info">info</Notice>
+            <Card padding="none">
+              None
+            </Card>
+          </div>
+        </StoryRow>
+      </StorySection>
 
-        <Notice variant="warning">warning (check paddock info)</Notice>
 
-        <Notice variant="error">error (info is required)</Notice>
+      {/* NOTICE */}
+      <StorySection title="Notice">
+        <StoryRow title="Variants">
+          <div className="space-y-3">
+            <Notice variant="info">
+              Info
+            </Notice>
 
-        <Notice variant="success">success (save complete)</Notice>
+            <Notice variant="warning">
+              Warning — check paddock information
+            </Notice>
 
-        <Notice variant="muted">muted (low priority)</Notice>
+            <Notice variant="error">
+              Error — information is required
+            </Notice>
 
-        <div>
-          <h3>Compact:</h3>
+            <Notice variant="success">
+              Success — save complete
+            </Notice>
 
+            <Notice variant="muted">
+              Muted — low priority
+            </Notice>
+          </div>
+        </StoryRow>
+
+        <StoryRow title="Compact">
           <Notice variant="info" compact>
-            Compact.
+            Compact notice
           </Notice>
-        </div>
+        </StoryRow>
 
-        <div>
-          <h3> List error</h3>
-
+        <StoryRow title="List error">
           <Notice variant="error">
-            error (Please correct)
+            Please correct:
+
             <ul>
               <li>Farm name</li>
               <li>Target residual</li>
             </ul>
           </Notice>
-        </div>
-      </section>
-      {/*   BRAND    */}
-      <section className="space-y-6">
-        <h2>Brand:</h2>
+        </StoryRow>
+      </StorySection>
 
-        <div>
+
+      {/* BRAND */}
+      <StorySection title="Brand">
+        <StoryRow title="Standard">
           <Brand />
-        </div>
-      </section>
-{/*   FORM ACTIONS    */}
-      <section className="space-y-6">
-        <h2>Form actions</h2>
+        </StoryRow>
+      </StorySection>
 
-        <div>
-          <h3 className="mb-3">Default</h3>
 
+      {/* FORM ACTIONS */}
+      <StorySection title="Form actions">
+        <StoryRow title="Default">
           <FormActions>
-            <Button>Cancel</Button>
-            <Button variant="primary">Save changes</Button>
+            <Button>
+              Cancel
+            </Button>
+
+            <Button variant="primary">
+              Save changes
+            </Button>
           </FormActions>
-        </div>
+        </StoryRow>
 
-        <div>
-          <h3 className="mb-3">Start aligned</h3>
-
+        <StoryRow title="Start aligned">
           <FormActions align="start">
-            <Button variant="primary">Continue</Button>
+            <Button variant="primary">
+              Continue
+            </Button>
           </FormActions>
-        </div>
-      </section>
-{/*   HERD TITLE    */}
-<section className="space-y-4">
-  <h2>Herd titles</h2>
-  <HerdTitle
-    herd={{
-      name: "Mixed age",
-      animals: 210,
-      colour: "blue",
-    }}
-  />
-</section>
+        </StoryRow>
+      </StorySection>
 
-{/*   METRIC    */}
-<section className="space-y-4">
-  <h2>Metrics</h2>
 
-  <div className="grid gap-4 sm:grid-cols-3">
-    <Metric
-      label="Pasture intake"
-      value="14.2"
-      unit="kgDM/cow/day"
-    />
+      {/* HERD TITLE */}
+      <StorySection title="Herd title">
+        <StoryRow title="Example">
+          <HerdTitle
+            herd={{
+              name: "Mixed age",
+              animals: 210,
+              colour: "blue",
+            }}
+          />
+        </StoryRow>
+      </StorySection>
 
-    <Metric
-      label="Feed difference"
-      value="-2.1"
-      unit="kgDM/cow/day"
-      tone="warning"
-    />
-  </div>
 
-  <div>
-    <h3 className="mb-3">
-      Compact on mobile
-    </h3>
+      {/* METRIC */}
+      <StorySection title="Metric">
+        <StoryRow title="Default and warning">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Metric
+              label="Pasture intake"
+              value="14.2"
+              unit="kgDM/cow/day"
+            />
 
-    <Metric
-      label="Days remaining"
-      value="34"
-      unit="days"
-      compactOnMobile
-    />
-  </div>
-</section>
-    </section>
+            <Metric
+              label="Feed difference"
+              value="-2.1"
+              unit="kgDM/cow/day"
+              tone="warning"
+            />
+          </div>
+        </StoryRow>
+
+        <StoryRow title="Compact on mobile">
+          <Metric
+            label="Days remaining"
+            value="34"
+            unit="days"
+            compactOnMobile
+          />
+        </StoryRow>
+      </StorySection>
+
+
+      {/* PAGE HEADER */}
+      <StorySection title="Page header">
+        <StoryRow title="Standard">
+          <PageHeader
+            title="Farm information"
+            subtitle="Manage your herds, paddocks and crops."
+          >
+            <Button variant="primary">
+              Save changes
+            </Button>
+          </PageHeader>
+        </StoryRow>
+      </StorySection>
+
+    </div>
   );
 }
 
