@@ -2,6 +2,7 @@ import Button from "./button/Button.jsx";
 import Card from "./Card.jsx";
 import Notice from "./Notice.jsx";
 import Brand from "./Brand.jsx";
+import FormActions from "./FormActions.jsx";
 
 export function Stories() {
   return (
@@ -106,14 +107,35 @@ export function Stories() {
           </Notice>
         </div>
       </section>
-{/*   BRAND    */}
-    <section className="space-y-6">
-  <h2>Brand:</h2>
+      {/*   BRAND    */}
+      <section className="space-y-6">
+        <h2>Brand:</h2>
 
-  <div>
-    <Brand />
-  </div>
-</section>
+        <div>
+          <Brand />
+        </div>
+      </section>
+
+      <section className="space-y-6">
+        <h2>Form actions</h2>
+
+        <div>
+          <h3 className="mb-3">Default</h3>
+
+          <FormActions>
+            <Button>Cancel</Button>
+            <Button variant="primary">Save changes</Button>
+          </FormActions>
+        </div>
+
+        <div>
+          <h3 className="mb-3">Start aligned</h3>
+
+          <FormActions align="start">
+            <Button variant="primary">Continue</Button>
+          </FormActions>
+        </div>
+      </section>
     </section>
   );
 }
