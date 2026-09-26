@@ -1,5 +1,6 @@
 import Button from "./button/Button.jsx";
 import Card from "./Card.jsx";
+import Notice from "./Notice.jsx";
 
 export function Stories() {
   return (
@@ -35,9 +36,8 @@ export function Stories() {
         </div>
       </section>
       {/*   CARD     */}
-      <h1 class="mt-10"> Card:</h1>
+      <h1 className="mt-10"> Card:</h1>
       <section>
-
         <div className="grid gap-4 md:grid-cols-5">
           <h2>Cards</h2>
           <Card variant="surface">
@@ -59,7 +59,6 @@ export function Stories() {
       </section>
 
       <section>
-
         <div className="grid gap-4 md:grid-cols-5">
           <h2>Card padding</h2>
           <Card padding="normal">Normal</Card>
@@ -69,6 +68,41 @@ export function Stories() {
           <Card padding="none">
             <div className="p-4">None</div>
           </Card>
+        </div>
+      </section>
+
+      {/*   NOTICE    */}
+      <section className="space-y-6">
+        <h2>Notice:</h2>
+
+        <Notice variant="info">info</Notice>
+
+        <Notice variant="warning">warning (check paddock info)</Notice>
+
+        <Notice variant="error">error (info is required)</Notice>
+
+        <Notice variant="success">success (save complete)</Notice>
+
+        <Notice variant="muted">muted (low priority)</Notice>
+
+        <div>
+          <h3>Compact:</h3>
+
+          <Notice variant="info" compact>
+            Compact.
+          </Notice>
+        </div>
+
+        <div>
+          <h3> List error</h3>
+
+          <Notice variant="error">
+            error (Please correct)
+            <ul>
+              <li>Farm name</li>
+              <li>Target residual</li>
+            </ul>
+          </Notice>
         </div>
       </section>
     </section>
