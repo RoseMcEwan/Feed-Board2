@@ -1,14 +1,16 @@
 import { useState } from "react";
-import Button from "./button/Button.jsx";
-import Card from "./Card.jsx";
-import Notice from "./Notice.jsx";
-import Brand from "./Brand.jsx";
-import FormActions from "./FormActions.jsx";
-import HerdTitle from "./HerdTitle.jsx";
-import Metric from "./Metric.jsx";
-import PageHeader from "./PageHeader.jsx";
-import DataTable, { TableHeader, TableCell } from "./DataTable.jsx";
-import { InputField, SelectField, TextareaField, CheckboxField } from "./FormFields.jsx";
+import Button from "./primaryUI/buttons/Button.jsx";
+import Card from "./primaryUI/Card.jsx";
+import Notice from "./primaryUI/Notice.jsx";
+import Brand from "./primaryUI/Brand.jsx";
+import FormActions from "./primaryUI/FormActions.jsx";
+import HerdTitle from "./primaryUI/HerdTitle.jsx";
+import Metric from "./primaryUI/Metric.jsx";
+import PageHeader from "./primaryUI/PageHeader.jsx";
+import DataTable, { TableHeader, TableCell } from "./primaryUI/DataTable.jsx";
+import { InputField, SelectField, TextareaField, CheckboxField } from "./primaryUI/FormFields.jsx";
+import SettingsFields from "./featureComponents/farm/forms/FarmSettingsFields.jsx";
+
 
 function StorySection({ title, children }) {
   return (
@@ -235,13 +237,13 @@ export function Stories() {
   <StoryRow title="Fields">
     <div className="grid max-w-md gap-4">
       <InputField
-        label="Farm name"
+        label="InputField"
         value="Rose's Farm"
         onChange={() => {}}
       />
 
       <InputField
-        label="Target residual"
+        label="InputField"
         type="number"
         unit="kgDM/ha"
         value="1550"
@@ -249,20 +251,42 @@ export function Stories() {
       />
 
       <SelectField
-        label="Farm type"
+        label="SelectField"
         value="Dairy"
         options={["Dairy", "Sheep / Beef"]}
         onChange={() => {}}
       />
 
       <TextareaField
-        label="Paddocks"
+        label="TextareaField"
         value={"Front 4.2\nRiver 3.8"}
         onChange={() => {}}
       />
 
       <CheckboxField
-        label="Use different Day 2 milking times"
+        label="CheckboxField"
+      />
+    </div>
+  </StoryRow>
+</StorySection>
+
+{/* SETTINGS FIELDS */}
+<StorySection
+  title="Settings fields"
+  uses="InputField · CheckboxField (FormFields)"
+>
+  <StoryRow title="Default">
+    <div className="@container max-w-2xl">
+      <SettingsFields
+        settings={{
+          farmType: "dairy",
+          farmName: "Rose's Farm",
+          assignHerds: true,
+          latitude: "-43.5321",
+          longitude: "172.6362",
+          targetCover: "2900",
+          residualKgDmHa: "1550",
+        }}
       />
     </div>
   </StoryRow>
