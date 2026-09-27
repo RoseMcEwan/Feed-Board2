@@ -1,23 +1,21 @@
+import { useState } from "react";
 import Button from "./button/Button.jsx";
 import Card from "./Card.jsx";
 import Notice from "./Notice.jsx";
 import Brand from "./Brand.jsx";
 import FormActions from "./FormActions.jsx";
-import HerdTitle from "./HerdTitle.jsx"
+import HerdTitle from "./HerdTitle.jsx";
 import Metric from "./Metric.jsx";
 import PageHeader from "./PageHeader.jsx";
 import DataTable, { TableHeader, TableCell } from "./DataTable.jsx";
+import { InputField, SelectField, TextareaField, CheckboxField } from "./FormFields.jsx";
 
 function StorySection({ title, children }) {
   return (
     <section className="border-b border-line py-8">
-      <h2 className="mb-6 text-2xl font-bold text-brand-dark">
-        {title}
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-brand-dark">{title}</h2>
 
-      <div className="space-y-6">
-        {children}
-      </div>
+      <div className="space-y-6">{children}</div>
     </section>
   );
 }
@@ -25,13 +23,9 @@ function StorySection({ title, children }) {
 function StoryRow({ title, children }) {
   return (
     <div className="grid gap-3 md:grid-cols-[12rem_1fr] md:gap-6">
-      <h3 className="m-0 text-base font-semibold text-blue-accent">
-        {title}
-      </h3>
+      <h3 className="m-0 text-base font-semibold text-blue-accent">{title}</h3>
 
-      <div className="min-w-0">
-        {children}
-      </div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
@@ -39,42 +33,27 @@ function StoryRow({ title, children }) {
 export function Stories() {
   return (
     <div className="mx-auto max-w-6xl px-6">
-
       {/* BUTTON */}
       <StorySection title="Button">
         <StoryRow title="Colour, border and emphasis">
           <div className="flex flex-wrap gap-4">
-            <Button variant="primary">
-              Primary
-            </Button>
+            <Button variant="primary">Primary</Button>
 
-            <Button variant="secondary">
-              Secondary
-            </Button>
+            <Button variant="secondary">Secondary</Button>
 
-            <Button variant="danger">
-              Delete
-            </Button>
+            <Button variant="danger">Delete</Button>
 
-            <Button variant="text">
-              Cancel
-            </Button>
+            <Button variant="text">Cancel</Button>
           </div>
         </StoryRow>
 
         <StoryRow title="Size">
           <div className="flex flex-wrap items-center gap-4">
-            <Button size="small">
-              Small
-            </Button>
+            <Button size="small">Small</Button>
 
-            <Button size="medium">
-              Medium
-            </Button>
+            <Button size="medium">Medium</Button>
 
-            <Button size="large">
-              Large
-            </Button>
+            <Button size="large">Large</Button>
           </div>
         </StoryRow>
 
@@ -85,70 +64,46 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-
       {/* CARD */}
       <StorySection title="Card">
         <StoryRow title="Variants">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Card variant="surface">
-              Surface
-            </Card>
+            <Card variant="surface">Surface</Card>
 
-            <Card variant="subtle">
-              Subtle
-            </Card>
+            <Card variant="subtle">Subtle</Card>
 
-            <Card variant="info">
-              Info
-            </Card>
+            <Card variant="info">Info</Card>
 
-            <Card variant="dashed">
-              Dashed
-            </Card>
+            <Card variant="dashed">Dashed</Card>
           </div>
         </StoryRow>
 
         <StoryRow title="Padding">
           <div className="grid gap-4 sm:grid-cols-3">
-            <Card padding="normal">
-              Normal
-            </Card>
+            <Card padding="normal">Normal</Card>
 
-            <Card padding="small">
-              Small
-            </Card>
+            <Card padding="small">Small</Card>
 
-            <Card padding="none">
-              None
-            </Card>
+            <Card padding="none">None</Card>
           </div>
         </StoryRow>
       </StorySection>
-
 
       {/* NOTICE */}
       <StorySection title="Notice">
         <StoryRow title="Variants">
           <div className="space-y-3">
-            <Notice variant="info">
-              Info
-            </Notice>
+            <Notice variant="info">Info</Notice>
 
             <Notice variant="warning">
               Warning — check paddock information
             </Notice>
 
-            <Notice variant="error">
-              Error — information is required
-            </Notice>
+            <Notice variant="error">Error — information is required</Notice>
 
-            <Notice variant="success">
-              Success — save complete
-            </Notice>
+            <Notice variant="success">Success — save complete</Notice>
 
-            <Notice variant="muted">
-              Muted — low priority
-            </Notice>
+            <Notice variant="muted">Muted — low priority</Notice>
           </div>
         </StoryRow>
 
@@ -161,7 +116,6 @@ export function Stories() {
         <StoryRow title="List error">
           <Notice variant="error">
             Please correct:
-
             <ul>
               <li>Farm name</li>
               <li>Target residual</li>
@@ -170,7 +124,6 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-
       {/* BRAND */}
       <StorySection title="Brand">
         <StoryRow title="Standard">
@@ -178,30 +131,22 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-
       {/* FORM ACTIONS */}
       <StorySection title="Form actions">
         <StoryRow title="Default">
           <FormActions>
-            <Button>
-              Cancel
-            </Button>
+            <Button>Cancel</Button>
 
-            <Button variant="primary">
-              Save changes
-            </Button>
+            <Button variant="primary">Save changes</Button>
           </FormActions>
         </StoryRow>
 
         <StoryRow title="Start aligned">
           <FormActions align="start">
-            <Button variant="primary">
-              Continue
-            </Button>
+            <Button variant="primary">Continue</Button>
           </FormActions>
         </StoryRow>
       </StorySection>
-
 
       {/* HERD TITLE */}
       <StorySection title="Herd title">
@@ -216,16 +161,11 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-
       {/* METRIC */}
       <StorySection title="Metric">
         <StoryRow title="Default and warning">
           <div className="grid gap-4 sm:grid-cols-2">
-            <Metric
-              label="Pasture intake"
-              value="14.2"
-              unit="kgDM/cow/day"
-            />
+            <Metric label="Pasture intake" value="14.2" unit="kgDM/cow/day" />
 
             <Metric
               label="Feed difference"
@@ -246,7 +186,6 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-
       {/* PAGE HEADER */}
       <StorySection title="Page header">
         <StoryRow title="Standard">
@@ -254,46 +193,82 @@ export function Stories() {
             title="Farm information"
             subtitle="Manage your herds, paddocks and crops."
           >
-            <Button variant="primary">
-              Save changes
-            </Button>
+            <Button variant="primary">Save changes</Button>
           </PageHeader>
         </StoryRow>
       </StorySection>
 
       {/* DATA TABLE */}
-<StorySection title="Data table">
-  <StoryRow title="Standard">
-    <DataTable
-      label="Example paddock table"
-      caption="Example paddock names and hectares"
-    >
-      <thead>
-        <tr>
-          <TableHeader>Paddock</TableHeader>
-          <TableHeader>Hectares</TableHeader>
-          <TableHeader>Type</TableHeader>
-        </tr>
-      </thead>
+      <StorySection title="Data table">
+        <StoryRow title="Standard">
+          <DataTable
+            label="Example paddock table"
+            caption="Example paddock names and hectares"
+          >
+            <thead>
+              <tr>
+                <TableHeader>Paddock</TableHeader>
+                <TableHeader>Hectares</TableHeader>
+                <TableHeader>Type</TableHeader>
+              </tr>
+            </thead>
 
-      <tbody>
-        <tr>
-          <TableCell>Front</TableCell>
-          <TableCell>4.5</TableCell>
-          <TableCell>Pasture</TableCell>
-        </tr>
+            <tbody>
+              <tr>
+                <TableCell>Front</TableCell>
+                <TableCell>4.5</TableCell>
+                <TableCell>Pasture</TableCell>
+              </tr>
 
-        <tr>
-          <TableCell>River</TableCell>
-          <TableCell>3.2</TableCell>
-          <TableCell>Crop</TableCell>
-        </tr>
-      </tbody>
-    </DataTable>
+              <tr>
+                <TableCell>River</TableCell>
+                <TableCell>3.2</TableCell>
+                <TableCell>Crop</TableCell>
+              </tr>
+            </tbody>
+          </DataTable>
+        </StoryRow>
+      </StorySection>
+
+{/* FORM FIELDS */}
+<StorySection title="Form fields">
+  <StoryRow title="Fields">
+    <div className="grid max-w-md gap-4">
+      <InputField
+        label="Farm name"
+        value="Rose's Farm"
+        onChange={() => {}}
+      />
+
+      <InputField
+        label="Target residual"
+        type="number"
+        unit="kgDM/ha"
+        value="1550"
+        onChange={() => {}}
+      />
+
+      <SelectField
+        label="Farm type"
+        value="Dairy"
+        options={["Dairy", "Sheep / Beef"]}
+        onChange={() => {}}
+      />
+
+      <TextareaField
+        label="Paddocks"
+        value={"Front 4.2\nRiver 3.8"}
+        onChange={() => {}}
+      />
+
+      <CheckboxField
+        label="Use different Day 2 milking times"
+      />
+    </div>
   </StoryRow>
 </StorySection>
-
-    </div> 
+      
+    </div>
   );
 }
 
