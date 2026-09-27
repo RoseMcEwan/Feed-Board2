@@ -3,16 +3,15 @@ const variants = {
   subtle: "border-line bg-subtle",
   info: "border-info-line bg-info-soft",
   dashed: "border-accent-line border-dashed bg-surface",
-};
+}
+
 const paddings = {
   normal: "p-4 sm:p-6",
   small: "p-4",
   none: "p-0",
-};
+}
 
-/** Shared container appearance. The parent owns content and placement. */
 export default function Card({
-  as: Element = "div",
   children,
   variant = "surface",
   padding = "normal",
@@ -20,16 +19,17 @@ export default function Card({
   ...props
 }) {
   const classes = [
-    "@container min-w-0 rounded-card border",
-    Object.hasOwn(variants, variant) ? variants[variant] : variants.surface,
-    Object.hasOwn(paddings, padding) ? paddings[padding] : paddings.normal,
+    "min-w-0 rounded-card border",
+    variants[variant] ?? variants.surface,
+    paddings[padding] ?? paddings.normal,
     className,
   ]
     .filter(Boolean)
-    .join(" ");
+    .join(" ")
+
   return (
-    <Element {...props} className={classes}>
+    <div {...props} className={classes}>
       {children}
-    </Element>
-  );
+    </div>
+  )
 }
