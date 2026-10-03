@@ -1,6 +1,6 @@
 import { buttonClasses } from "./buttonStyles.js";
 
-/** Use for actions. Defaults to type="button" so it cannot accidentally submit a form. */
+// Use for actions. Defaults to type="button".
 export default function Button({
   children,
   variant,

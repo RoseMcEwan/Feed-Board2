@@ -67,6 +67,7 @@ export function InputField({
 }) {
   const id = useId();
 
+  // Link unit and error text to the input.
   const describedBy =
     [unit && `${id}-unit`, error && `${id}-error`].filter(Boolean).join(" ") ||
     undefined;
@@ -75,7 +76,7 @@ export function InputField({
     controlClasses,
     "h-control",
     unit ? "flex-1 rounded-l-control" : "rounded-control",
-    error ? "border-danger" : "",
+    error && "border-danger",
     className,
   ]
     .filter(Boolean)

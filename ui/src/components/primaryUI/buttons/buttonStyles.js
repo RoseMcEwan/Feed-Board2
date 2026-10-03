@@ -1,5 +1,4 @@
-// Full literal class names let Tailwind discover every supported variant at build time.
-// className is for placement (e.g. mt-4, w-full), not overriding variant/size styles.
+// className is for placement, not overriding variant/size styles.
 const variants = {
   primary:
     "border-brand bg-brand text-inverse [&:not(:disabled)]:hover:border-brand-dark [&:not(:disabled)]:hover:bg-brand-dark",

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { buttonClasses } from "./buttonStyles.js";
 
-/** Navigation stays a real link: keyboard support, open-in-new-tab and browser history. */
+// Navigation stays a real link
 export default function ButtonLink({
   children,
   variant,

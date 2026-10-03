@@ -9,7 +9,7 @@ export default function HerdTitle({ herd }) {
         className="inline-block size-2.25 rounded-full bg-herd"
       />
 
-      <h2 className="m-0 text-lg">{herd.name}</h2>
+      <h2 className="mb-0 text-lg">{herd.name}</h2>
 
       <span className="rounded-sm bg-herd-soft px-1.5 py-0.5 text-micro text-herd">
         {Number(herd.animals ?? 0).toLocaleString("en-NZ")} animals

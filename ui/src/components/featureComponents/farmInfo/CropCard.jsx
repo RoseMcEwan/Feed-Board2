@@ -7,13 +7,14 @@ import { calculateCropMetrics } from "../../../calculations/CropMetric.js";
 import { displayNumber } from "../../../utilis/numbers.js";
 import { formatDate } from "../../../utilis/calendarDates.js";
 export default function CropCard({ crop, farm, onChange, today }) {
-  
+
   const paddock = farm.paddocks.find(
     (paddock) => paddock.id === crop.paddockId,
   );
 
   const herd = farm.herds.find((herd) => herd.id === crop.herdId);
 
+  // Ignore crop records whose linked paddock no longer exists.
   if (!paddock) return null;
 
   const result = calculateCropMetrics({
@@ -23,6 +24,7 @@ export default function CropCard({ crop, farm, onChange, today }) {
     today,
   });
 
+  // Crop feeding fields and paddock details are stored separately to update the matching record.
   const changeCrop = (field, value) =>
     onChange({
       ...farm,
