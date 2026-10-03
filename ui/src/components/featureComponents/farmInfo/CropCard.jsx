@@ -1,12 +1,13 @@
 import Card from "../../primaryUI/Card.jsx";
 import { InputField, SelectField } from "../../primaryUI/FormFields.jsx";
 import Notice from "../../primaryUI/Notice.jsx";
+import Metric from "../../primaryUI/Metric.jsx";
 import { CROP_TYPES } from "../../../data/farmDefaults.js";
 import { calculateCropMetrics } from "../../../calculations/CropMetric.js";
 import { displayNumber } from "../../../utilis/numbers.js";
 import { formatDate } from "../../../utilis/calendarDates.js";
-
 export default function CropCard({ crop, farm, onChange, today }) {
+  
   const paddock = farm.paddocks.find(
     (paddock) => paddock.id === crop.paddockId,
   );
@@ -124,40 +125,29 @@ export default function CropCard({ crop, farm, onChange, today }) {
           />
         )}
       </div>
+
       {result.valid ? (
         <>
-          <div className="mt-6 grid gap-5 rounded-panel border border-line bg-wash p-5 @sm:grid-cols-2 @sm:p-6">
-            <div>
-              <span className="block text-xs text-muted">
-                {result.status === "scheduled"
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <Metric
+              label={
+                result.status === "scheduled"
                   ? "Feeding days available"
-                  : "Estimated days remaining"}
-              </span>
-
-              <strong className="block text-5xl leading-tight font-semibold tracking-tighter text-heading">
-                {displayNumber(result.daysRemaining)}
-              </strong>
-
-              <small className="block text-xs text-muted">
-                {result.status === "scheduled"
+                  : "Estimated days remaining"
+              }
+              value={displayNumber(result.daysRemaining)}
+              unit={
+                result.status === "scheduled"
                   ? `Starts ${formatDate(crop.startDate)}`
-                  : `As at ${formatDate(today)}`}
-              </small>
-            </div>
+                  : `As at ${formatDate(today)}`
+              }
+            />
 
-            <div className="flex flex-col justify-center border-t border-info-line pt-4 @sm:border-t-0 @sm:border-l @sm:pt-0 @sm:pl-6">
-              <span className="block text-xs text-muted">
-                Estimated exhausted by
-              </span>
-
-              <strong className="my-2 block text-section text-brand-dark">
-                {formatDate(result.finishDate)}
-              </strong>
-
-              <small className="block text-xs text-muted">
-                Last feeding day: {formatDate(result.lastFeedingDate)}
-              </small>
-            </div>
+            <Metric
+              label="Estimated exhausted by"
+              value={formatDate(result.finishDate)}
+              unit={`Last feeding day: ${formatDate(result.lastFeedingDate)}`}
+            />
           </div>
 
           <p className="mt-3 mb-0 text-caption leading-relaxed text-muted">
