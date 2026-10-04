@@ -86,7 +86,7 @@ export default function HerdsEditor({ farm, onChange, showCalculations = false, 
       )}
 
       {/* Farm Info reuses the same editor in a wider layout. */}
-      <div className={singleColumn ? "grid gap-5" : "grid gap-5 xl:grid-cols-2"}>
+      <div className={singleColumn ? "grid gap-5" : "grid gap-5 md:grid-cols-2"}>
         {groups.map((herd) => (
           <HerdDataCard
             key={herd.id}
