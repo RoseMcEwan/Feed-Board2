@@ -122,7 +122,7 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
 
             {farm.settings.assignHerds && <TableHeader className="@max-3xl/paddocks:w-[20%]">Herd</TableHeader>}
 
-            <TableHeader className="w-8">
+            <TableHeader className="w-8 @3xl/paddocks:w-26">
               <span className="sr-only">Actions</span>
             </TableHeader>
           </tr>
@@ -228,7 +228,7 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
                           <span className="text-xs text-muted @3xl/paddocks:hidden">—</span>
 
                           <span className="hidden items-center rounded-sm bg-brand-subtle px-2 py-1 text-tiny font-semibold text-brand @3xl/paddocks:inline-flex">
-                            Available for grazing
+                            Available
                           </span>
                         </>
                       )}

@@ -1,24 +1,15 @@
-import DataTable, {
-  TableHeader,
-  TableCell,
-} from "../../primaryUI/DataTable.jsx";
+import DataTable, { TableHeader, TableCell } from "../../primaryUI/DataTable.jsx";
 import FormActions from "../../primaryUI/FormActions.jsx";
 import Card from "../../primaryUI/Card.jsx";
 import { parsePaddockText } from "../../../utilis/parsePaddocks.js";
 import { positive } from "../../../utilis/numbers.js";
-import {
-  InputField,
-  TextareaField,
-  SelectField,
-  CheckboxField,
-} from "../../primaryUI/FormFields.jsx";
+import { InputField, TextareaField, SelectField } from "../../primaryUI/FormFields.jsx";
 import Button from "../../primaryUI/buttons/Button.jsx";
 import Notice from "../../primaryUI/Notice.jsx";
 
 export default function PaddockImporter({ farm, onImport }) {
   const text = farm.importText || "";
   const result = farm.importDraft?.result ?? null;
-  const acknowledged = farm.importDraft?.acknowledged ?? false;
 
   function setText(value) {
     onImport({
@@ -27,8 +18,8 @@ export default function PaddockImporter({ farm, onImport }) {
       importDraft: null,
     });
   }
-  
-  // Updating import preview 
+
+  // Updating import preview
   function setResult(change) {
     const next = typeof change === "function" ? change(result) : change;
 
@@ -36,26 +27,13 @@ export default function PaddockImporter({ farm, onImport }) {
       ...farm,
       importDraft: {
         result: next,
-        acknowledged: false,
       },
     });
   }
 
-  function setAcknowledged(value) {
-    onImport({
-      ...farm,
-      importDraft: {
-        result,
-        acknowledged: value,
-      },
-    });
-  }
-
-  // Check for duplicates 
+  // Check for duplicates
   const duplicates = new Set();
-  const seen = new Set(
-    farm.paddocks.map((paddock) => paddock.name.trim().toLowerCase()),
-  );
+  const seen = new Set(farm.paddocks.map((paddock) => paddock.name.trim().toLowerCase()));
 
   result?.rows.forEach((row) => {
     const key = row.name.trim().toLowerCase();
@@ -67,17 +45,12 @@ export default function PaddockImporter({ farm, onImport }) {
     seen.add(key);
   });
 
-  const invalid = result?.rows.some(
-    (row) =>
-      !row.name.trim() || !positive(row.hectares) || duplicates.has(row.id),
-  );
+  const invalid = result?.rows.some((row) => !row.name.trim() || !positive(row.hectares) || duplicates.has(row.id));
 
   function changeRow(id, field, value) {
     setResult((current) => ({
       ...current,
-      rows: current.rows.map((row) =>
-        row.id === id ? { ...row, [field]: value } : row,
-      ),
+      rows: current.rows.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
     }));
   }
 
@@ -85,13 +58,8 @@ export default function PaddockImporter({ farm, onImport }) {
     setResult(parsePaddockText(text, farm.herds));
   }
 
-  // Only import a valid preview, and require skipped source rows to be reviewed first.
   function confirmImport() {
-    if (
-      !result?.rows.length ||
-      invalid ||
-      (result.skipped.length && !acknowledged)
-    ) {
+    if (!result?.rows.length || invalid) {
       return;
     }
 
@@ -120,9 +88,7 @@ export default function PaddockImporter({ farm, onImport }) {
   return (
     <Card variant="dashed" className="grid min-w-0 gap-5">
       <div>
-        <p className="mb-1.5 text-tiny font-bold tracking-widest text-brand uppercase">
-          PASTE, REVIEW, IMPORT
-        </p>
+        <p className="mb-1.5 text-tiny font-bold tracking-widest text-brand uppercase">PASTE, REVIEW, IMPORT</p>
 
         <h3 className="mt-1 mb-2.5 text-xl">Paste your paddocks</h3>
 
@@ -152,9 +118,7 @@ export default function PaddockImporter({ farm, onImport }) {
           <Button
             variant="text"
             onClick={() => {
-              if (
-                !window.confirm("Discard this unimported text and preview?")
-              ) {
+              if (!window.confirm("Discard this unimported text and preview?")) {
                 return;
               }
 
@@ -170,15 +134,9 @@ export default function PaddockImporter({ farm, onImport }) {
 
       {Boolean(result?.rows.length) && (
         <>
-          <Notice>
-            Check each paddock name, hectare value and herd before importing.
-          </Notice>
+          <Notice>Check each paddock name, hectare value and herd before importing.</Notice>
 
-          <DataTable
-            label="Import preview"
-            caption="Recognised paddock names, hectares and herds"
-            fixed
-          >
+          <DataTable label="Import preview" caption="Recognised paddock names, hectares and herds" fixed>
             <thead>
               <tr>
                 <TableHeader>Paddock Name</TableHeader>
@@ -195,16 +153,10 @@ export default function PaddockImporter({ farm, onImport }) {
                   <TableCell>
                     <InputField
                       label={`Imported name ${i + 1}`}
-                      error={
-                        duplicates.has(row.id)
-                          ? "Duplicate name — rename."
-                          : undefined
-                      }
+                      error={duplicates.has(row.id) ? "Duplicate name — rename." : undefined}
                       labelHidden
                       value={row.name}
-                      onChange={(e) =>
-                        changeRow(row.id, "name", e.target.value)
-                      }
+                      onChange={(e) => changeRow(row.id, "name", e.target.value)}
                     />
                   </TableCell>
 
@@ -212,14 +164,10 @@ export default function PaddockImporter({ farm, onImport }) {
                     <InputField
                       type="number"
                       label={`Imported hectares ${i + 1}`}
-                      error={
-                        !positive(row.hectares) ? "Enter hectares." : undefined
-                      }
+                      error={!positive(row.hectares) ? "Enter hectares." : undefined}
                       labelHidden
                       value={row.hectares}
-                      onChange={(e) =>
-                        changeRow(row.id, "hectares", e.target.value)
-                      }
+                      onChange={(e) => changeRow(row.id, "hectares", e.target.value)}
                       min={0.001}
                       step="any"
                     />
@@ -231,9 +179,7 @@ export default function PaddockImporter({ farm, onImport }) {
                         label={`Imported herd ${i + 1}`}
                         labelHidden
                         value={row.herdId}
-                        onChange={(e) =>
-                          changeRow(row.id, "herdId", e.target.value)
-                        }
+                        onChange={(e) => changeRow(row.id, "herdId", e.target.value)}
                         options={[
                           { value: "", label: "Allocate in next step" },
                           ...farm.herds.map((herd) => ({
@@ -251,43 +197,8 @@ export default function PaddockImporter({ farm, onImport }) {
         </>
       )}
 
-      {Boolean(result?.skipped.length) && (
-        <details open>
-          <summary>
-            {result.skipped.length} source rows will not be imported
-          </summary>
-
-          <div className="my-2.5 max-h-56 overflow-auto bg-navigation p-2.5">
-            {result.skipped.map((line, i) => (
-              <p key={i} className="mt-1.5 mb-3">
-                <code className="text-xs whitespace-pre-wrap wrap-anywhere">
-                  {line.raw}
-                </code>
-
-                <small className="block text-xs text-muted">
-                  {line.reason}
-                </small>
-              </p>
-            ))}
-          </div>
-
-          <CheckboxField
-            label="I checked the omitted rows and will add any missing paddocks manually"
-            checked={acknowledged}
-            onChange={(e) => setAcknowledged(e.target.checked)}
-          />
-        </details>
-      )}
-
       {Boolean(result?.rows.length) && (
-        <Button
-          variant="primary"
-          className="justify-self-start"
-          onClick={confirmImport}
-          disabled={
-            invalid || (Boolean(result.skipped.length) && !acknowledged)
-          }
-        >
+        <Button variant="primary" className="justify-self-start" onClick={confirmImport} disabled={invalid}>
           Import {result.rows.length} paddocks
         </Button>
       )}
