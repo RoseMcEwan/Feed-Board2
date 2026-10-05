@@ -12,12 +12,6 @@ const exclusionReasons = [
   { value: "other", label: "Other" },
 ];
 
-const exclusionCategories = {
-  crop: "Crop",
-  "young-grass": "Young grass",
-  other: "Other",
-};
-
 const cropTypes = [{ value: "", label: "Choose crop type" }, ...CROP_TYPES];
 
 // Keep paddock exclusion changes and linked crop records in sync.
@@ -34,14 +28,11 @@ function changePaddock(farm, id, field, value) {
 
     if (field === "excluded" && !value) {
       next.exclusionReason = "";
-
-      if (["Crop", "Other", "Silage"].includes(next.category)) {
-        next.category = "Pasture";
-      }
+      next.otherReason = "";
     }
 
-    if (field === "exclusionReason") {
-      next.category = exclusionCategories[value] ?? next.category;
+    if (field === "exclusionReason" && value !== "other") {
+      next.otherReason = "";
     }
 
     return next;
@@ -65,6 +56,26 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
   function change(id, field, value) {
     const current = farm.paddocks.find((paddock) => paddock.id === id);
 
+  function changeCrop(paddockId, field, value) {
+  const synced = syncCropRecords(farm);
+
+  onChange({
+    ...synced,
+    crops: synced.crops.map((crop) => {
+      if (crop.paddockId !== paddockId) {
+        return crop;
+      }
+
+      return {
+        ...crop,
+        [field]: value,
+
+        ...(field === "cropType" && value !== "Other" ? { otherCropType: "" } : {}),
+      };
+    }),
+  });
+}
+
     // Confirm before an edit removes an existing crop feeding plan.
     const removesCrop =
       current?.exclusionReason === "crop" &&
@@ -73,7 +84,14 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
     if (
       removesCrop &&
       (farm.crops ?? []).some(
-        (crop) => crop.paddockId === id && (crop.startDate || crop.yieldKgDMHa || crop.kgDMPerAnimalDay),
+        (crop) =>
+          crop.paddockId === id &&
+          (crop.cropType ||
+            crop.otherCropType ||
+            crop.herdId ||
+            crop.startDate ||
+            crop.yieldKgDMHa ||
+            crop.kgDMPerAnimalDay),
       ) &&
       !window.confirm("This will remove the crop feeding plan for this paddock. Continue?")
     ) {
@@ -131,6 +149,7 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
         <tbody>
           {farm.paddocks.map((paddock, index) => {
             const name = paddock.name || `paddock ${index + 1}`;
+            const crop = farm.crops.find((item) => item.paddockId === paddock.id);
 
             return (
               <tr key={paddock.id} className={paddock.excluded ? "bg-subtle" : "hover:bg-subtle"}>
@@ -143,12 +162,6 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
                     required
                     maxLength={80}
                   />
-
-                  {!simple && paddock.category !== "Pasture" && (
-                    <span className="mt-1 block text-[10px] text-muted wrap-anywhere @3xl/paddocks:mt-1.5 @3xl/paddocks:text-tiny">
-                      {paddock.category}
-                    </span>
-                  )}
                 </TableCell>
 
                 <TableCell>
@@ -193,19 +206,19 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
                               <SelectField
                                 label={`Crop type for ${name}`}
                                 labelHidden
-                                value={paddock.cropType}
+                                value={crop?.cropType ?? ""}
                                 options={cropTypes}
-                                onChange={(event) => change(paddock.id, "cropType", event.target.value)}
+                                onChange={(event) => changeCrop(paddock.id, "cropType", event.target.value)}
                                 required
                               />
 
-                              {paddock.cropType === "Other" && (
+                              {crop.cropType === "Other" && (
                                 <InputField
                                   label={`Other crop type for ${name}`}
                                   labelHidden
-                                  value={paddock.otherCropType}
+                                  value={crop?.otherCropType ?? ""}
                                   placeholder="Crop type"
-                                  onChange={(event) => change(paddock.id, "otherCropType", event.target.value)}
+                                  onChange={(event) => changeCrop(paddock.id, "otherCropType", event.target.value)}
                                   required
                                 />
                               )}

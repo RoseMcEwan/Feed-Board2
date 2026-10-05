@@ -21,17 +21,21 @@ export default function CropCard({ crop, farm, onChange, today }) {
     today,
   });
 
-  // Crop feeding fields and paddock details are stored separately to update the matching record.
+  // Crop type and feeding details belong to the linked crop record.
   const changeCrop = (field, value) =>
     onChange({
       ...farm,
-      crops: farm.crops.map((item) => (item.id === crop.id ? { ...item, [field]: value } : item)),
-    });
+      crops: farm.crops.map((item) =>
+        item.id === crop.id
+          ? {
+              ...item,
+              [field]: value,
 
-  const changePaddock = (field, value) =>
-    onChange({
-      ...farm,
-      paddocks: farm.paddocks.map((item) => (item.id === paddock.id ? { ...item, [field]: value } : item)),
+              // Clear the custom name when "Other" is no longer selected.
+              ...(field === "cropType" && value !== "Other" ? { otherCropType: "" } : {}),
+            }
+          : item,
+      ),
     });
 
   return (
@@ -44,13 +48,12 @@ export default function CropCard({ crop, farm, onChange, today }) {
 
       <div className="grid gap-3 @3xl:grid-cols-3 @3xl:gap-4">
         <div className="grid grid-cols-2 items-end gap-3 @3xl:contents">
-
           <InputField type="number" label="Paddock area" value={paddock.hectares} unit="ha" disabled />
           <SelectField
             label="Crop type"
-            value={paddock.cropType}
+            value={crop.cropType ?? ""}
             options={[{ value: "", label: "Choose crop type" }, ...CROP_TYPES]}
-            onChange={(e) => changePaddock("cropType", e.target.value)}
+            onChange={(e) => changeCrop("cropType", e.target.value)}
             required
           />
         </div>
@@ -90,6 +93,7 @@ export default function CropCard({ crop, farm, onChange, today }) {
               })),
             ]}
             onChange={(e) => changeCrop("herdId", e.target.value)}
+            required
           />
 
           <InputField
@@ -100,11 +104,11 @@ export default function CropCard({ crop, farm, onChange, today }) {
           />
         </div>
 
-        {paddock.cropType === "Other" && (
+        {crop.cropType === "Other" && (
           <InputField
             label="Other crop type"
-            value={paddock.otherCropType}
-            onChange={(e) => changePaddock("otherCropType", e.target.value)}
+            value={crop.otherCropType ?? ""}
+            onChange={(e) => changeCrop("otherCropType", e.target.value)}
             required
           />
         )}

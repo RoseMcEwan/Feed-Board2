@@ -69,12 +69,9 @@ export default function PaddockImporter({ farm, onImport }) {
       name: row.name.trim(),
       hectares: Number(row.hectares),
       herdId: row.herdId,
-      category: "Pasture",
       excluded: false,
       exclusionReason: "",
       otherReason: "",
-      cropType: "",
-      otherCropType: "",
     }));
 
     onImport({
