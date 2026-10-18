@@ -1,7 +1,7 @@
 import CropCard from "./CropCard.jsx";
 import Notice from "../../primaryUI/Notice.jsx";
 
-export default function CropsEditor({ farm, onChange, today }) {
+export default function CropsEditor({ farm, onChange, today, metrics }) {
   return (
     <div className="grid min-w-0 gap-5">
       {farm.crops.length ? (
@@ -11,13 +11,12 @@ export default function CropsEditor({ farm, onChange, today }) {
             crop={crop}
             farm={farm}
             today={today}
+            metric={metrics?.[crop.id]}
             onChange={onChange}
           />
         ))
       ) : (
-        <Notice>
-          No crop paddocks yet. On Paddocks, tick “Exclude” and choose a crop.
-        </Notice>
+        <Notice>No crop paddocks yet. On Paddocks, tick “Exclude” and choose a crop.</Notice>
       )}
     </div>
   );
