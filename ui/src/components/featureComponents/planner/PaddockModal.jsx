@@ -1,56 +1,90 @@
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowDown, ArrowUp, Plus, X } from "lucide-react";
 
 import FormActions from "../../primaryUI/FormActions.jsx";
 import Button from "../../primaryUI/buttons/Button.jsx";
 import { InputField, SelectField } from "../../primaryUI/FormFields.jsx";
-import { availableQueuePaddocks } from "../../../utilis/farmSelectors.js";
-import { displayNumber } from "../../../utilis/numbers.js";
+import { createId, displayNumber } from "../../../utilis/numbers.js";
+import { isValidDate } from "../../../utilis/calendarDates.js";
 
-export default function PaddockModal({ group, farm, currentOrder, selectedDate, onClose, onSave }) {
+export default function PaddockModal({
+  group,
+  farm,
+  currentOrder,
+  selectedDate,
+  onClose,
+  onSave,
+  availablePaddocks = [],
+}) {
   const dialogRef = useRef(null);
   const titleId = useId();
 
-  const availablePaddocks = availableQueuePaddocks(farm, group.id);
   const availableIds = new Set(availablePaddocks.map((paddock) => paddock.id));
-  const savedOrder = currentOrder?.paddockIds ?? [];
 
-  // Remove paddocks that are no longer available to this herd from older saved queues.
-  const order = savedOrder.filter((id) => id === "" || availableIds.has(id));
+  // Keep modal edits local until Save order is clicked.
+  const [startDate, setStartDate] = useState(currentOrder?.startDate ?? selectedDate);
+
+  const [rows, setRows] = useState(() =>
+    (currentOrder?.paddockIds ?? [])
+      .filter((id) => availableIds.has(id))
+      .map((paddockId) => ({
+        id: createId("queue-row"),
+        paddockId,
+      })),
+  );
+
+  const order = rows.map((row) => row.paddockId);
 
   const remainingPaddocks = availablePaddocks.filter((paddock) => !order.includes(paddock.id));
 
-  const startDate = currentOrder?.startDate ?? selectedDate;
-
-  function changeOrder(change) {
-    onSave({
-      startDate,
-      paddockIds: order,
-      ...change,
-    });
+  function changeRow(index, paddockId) {
+    setRows((current) =>
+      current.map((row, rowIndex) =>
+        rowIndex === index
+          ? {
+              ...row,
+              paddockId,
+            }
+          : row,
+      ),
+    );
   }
 
   function move(index, direction) {
-    const next = [...order];
-    const destination = index + direction;
+    setRows((current) => {
+      const next = [...current];
+      const destination = index + direction;
 
-    [next[index], next[destination]] = [next[destination], next[index]];
+      [next[index], next[destination]] = [next[destination], next[index]];
 
-    changeOrder({ paddockIds: next });
+      return next;
+    });
   }
 
-  // Save any unavailable paddocks that were automatically removed from an old queue.
-  function closeAndSave() {
-    if (order.length !== savedOrder.length) {
-      changeOrder({ paddockIds: order });
+  function saveOrder() {
+    // No paddocks means this herd no longer has an active queue.
+    if (!rows.length) {
+      onSave(null);
+      onClose();
+      return;
     }
+
+    if (!isValidDate(startDate)) {
+      return;
+    }
+
+    onSave({
+      startDate,
+      paddockIds: order,
+    });
 
     onClose();
   }
 
   useEffect(() => {
     const dialog = dialogRef.current;
+
     // Restore focus to the previous control when the dialog closes.
     const previous = document.activeElement;
 
@@ -69,12 +103,13 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
       aria-labelledby={titleId}
       onCancel={(event) => {
         event.preventDefault();
-        closeAndSave();
+        onClose();
       }}
       onClick={(event) => {
         if (event.target !== dialogRef.current) {
           return;
         }
+
         // Only close when the backdrop click falls outside the dialog box.
         const rect = dialogRef.current.getBoundingClientRect();
 
@@ -84,7 +119,7 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
           event.clientY < rect.top ||
           event.clientY > rect.bottom
         ) {
-          closeAndSave();
+          onClose();
         }
       }}
     >
@@ -97,7 +132,7 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
           </h2>
         </div>
 
-        <Button size="icon" aria-label="Close dialog" onClick={closeAndSave}>
+        <Button size="icon" aria-label="Close dialog" onClick={onClose}>
           <X aria-hidden="true" size={20} />
         </Button>
       </header>
@@ -107,22 +142,22 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
           label="Queue starts on"
           type="date"
           value={startDate}
-          onChange={(event) => changeOrder({ startDate: event.target.value })}
+          onChange={(event) => setStartDate(event.target.value)}
           required
         />
 
         <p className="mb-0 text-caption leading-relaxed text-muted">
           Tolerance: {displayNumber(farm.settings.paddockToleranceHa, 2)} ha, change in{" "}
-          <Link to="/settings" onClick={closeAndSave}>
+          <Link to="/settings" onClick={onClose}>
             Farm settings
           </Link>
           .
         </p>
 
         <ol className="grid list-none gap-2.5">
-          {order.map((id, index) => (
+          {rows.map((row, index) => (
             <li
-              key={`${index}-${id}`}
+              key={row.id}
               className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2 sm:grid-cols-[auto_minmax(0,1fr)_auto]"
             >
               <span className="w-6 text-center text-caption font-semibold text-faint">{index + 1}</span>
@@ -130,21 +165,14 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
               <SelectField
                 label={`Paddock position ${index + 1}`}
                 labelHidden
-                value={id}
-                options={[
-                  { value: "", label: "Choose paddock" },
-                  ...availablePaddocks
-                    .filter((paddock) => paddock.id === id || !order.includes(paddock.id))
-                    .map((paddock) => ({
-                      value: paddock.id,
-                      label: `${paddock.name} · ${displayNumber(paddock.hectares, 2)} ha`,
-                    })),
-                ]}
-                onChange={(event) =>
-                  changeOrder({
-                    paddockIds: order.map((value, i) => (i === index ? event.target.value : value)),
-                  })
-                }
+                value={row.paddockId}
+                options={availablePaddocks
+                  .filter((paddock) => paddock.id === row.paddockId || !order.includes(paddock.id))
+                  .map((paddock) => ({
+                    value: paddock.id,
+                    label: `${paddock.name} · ${displayNumber(paddock.hectares, 2)} ha`,
+                  }))}
+                onChange={(event) => changeRow(index, event.target.value)}
               />
 
               <div className="col-start-2 flex justify-self-end gap-1 sm:col-start-auto">
@@ -160,7 +188,7 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
                 <Button
                   size="icon"
                   aria-label={`Move paddock ${index + 1} down`}
-                  disabled={index === order.length - 1}
+                  disabled={index === rows.length - 1}
                   onClick={() => move(index, 1)}
                 >
                   <ArrowDown aria-hidden="true" size={18} />
@@ -169,11 +197,7 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
                 <Button
                   size="icon"
                   aria-label={`Remove paddock position ${index + 1}`}
-                  onClick={() =>
-                    changeOrder({
-                      paddockIds: order.filter((_, i) => i !== index),
-                    })
-                  }
+                  onClick={() => setRows((current) => current.filter((_, rowIndex) => rowIndex !== index))}
                 >
                   <X aria-hidden="true" size={18} />
                 </Button>
@@ -184,12 +208,22 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
 
         <FormActions align="start">
           <Button
-            disabled={order.length >= availablePaddocks.length}
-            onClick={() =>
-              changeOrder({
-                paddockIds: [...order, ""],
-              })
-            }
+            disabled={!remainingPaddocks.length}
+            onClick={() => {
+              const paddock = remainingPaddocks[0];
+
+              if (!paddock) {
+                return;
+              }
+
+              setRows((current) => [
+                ...current,
+                {
+                  id: createId("queue-row"),
+                  paddockId: paddock.id,
+                },
+              ]);
+            }}
           >
             <Plus aria-hidden="true" size={18} />
             Add paddock
@@ -198,9 +232,13 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
           <Button
             disabled={!remainingPaddocks.length}
             onClick={() =>
-              changeOrder({
-                paddockIds: [...order.filter(Boolean), ...remainingPaddocks.map((paddock) => paddock.id)],
-              })
+              setRows((current) => [
+                ...current,
+                ...remainingPaddocks.map((paddock) => ({
+                  id: createId("queue-row"),
+                  paddockId: paddock.id,
+                })),
+              ])
             }
           >
             Add all remaining paddocks
@@ -208,8 +246,8 @@ export default function PaddockModal({ group, farm, currentOrder, selectedDate, 
         </FormActions>
 
         <FormActions>
-          <Button variant="primary" onClick={closeAndSave}>
-            Done
+          <Button variant="primary" disabled={rows.length > 0 && !isValidDate(startDate)} onClick={saveOrder}>
+            Save order
           </Button>
         </FormActions>
       </div>

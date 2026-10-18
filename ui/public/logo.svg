@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 57 41" role="img" aria-labelledby="title desc">
+  <title id="title">Grass logo</title>
+  <desc id="desc">A simple green four-blade grass icon on a transparent background.</desc>
+  <g fill="#3F8F20">
+    <!-- Left outer blade -->
+    <path d="M18.8 36.7c-.1-4.3-.8-8.2-2.1-11.7-.8-2.1-1.7-3.9-2.8-5.5 4.7 2.1 8.2 6.2 10.4 12.1.5 1.4.9 3.1 1.2 5.1h-6.7z"/>
+
+    <!-- Tall centre-left blade -->
+    <path d="M23.9 36.7c.5-5.5.8-10.7.8-15.5 0-5-.4-9.4-1.3-13.1 3.7 3.2 6.2 7.2 7.5 12 1.2 4.4 1.6 9.9 1.2 16.6h-8.2z"/>
+
+    <!-- Tall centre-right blade -->
+    <path d="M29.6 36.7c.5-6.3 1.6-11.8 3.3-16.4 1.8-4.9 4.5-8.4 8.2-10.5-2 3.4-3.3 7.1-4.1 11.1-.9 4.6-1 9.9-.3 15.8h-7.1z"/>
+
+    <!-- Right outer blade -->
+    <path d="M34.1 36.7c.8-4.5 2.1-8 4-10.5 1.8-2.4 4.2-4.2 7.1-5.3-2 2.2-3.5 4.7-4.4 7.5-.8 2.4-1.2 5.2-1.2 8.3h-5.5z"/>
+  </g>
+</svg>

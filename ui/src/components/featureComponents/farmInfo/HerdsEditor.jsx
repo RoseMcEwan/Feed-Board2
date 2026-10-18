@@ -1,11 +1,4 @@
 import { displayNumber } from "../../../utilis/numbers.js";
-import { cropIntakeForHerd } from "../../../calculations/CropMetric.js";
-import {
-  calculateTotalHa24h,
-  calculatePastureKgDM,
-  calculateFeedDifference,
-} from "../../../calculations/calculateFeedMetrics.js";
-import { planningGroups } from "../../../utilis/farmSelectors.js";
 import { COLOURS, STOCK_CLASSES, createHerd } from "../../../data/farmDefaults.js";
 import Metric from "../../primaryUI/Metric.jsx";
 import Button from "../../primaryUI/buttons/Button.jsx";
@@ -20,7 +13,7 @@ const colourOptions = COLOURS.map((colour) => ({
   label: colour.charAt(0).toUpperCase() + colour.slice(1),
 }));
 
-export default function HerdsEditor({ farm, onChange, showCalculations = false, today, singleColumn = false }) {
+export default function HerdsEditor({ farm, onChange, showCalculations = false, metrics, singleColumn = false }) {
   function updateHerd(id, field, value) {
     onChange({
       ...farm,
@@ -35,33 +28,24 @@ export default function HerdsEditor({ farm, onChange, showCalculations = false, 
     });
   }
 
-  // Clear linked assignments and planner orders so nothing references a deleted herd.
   function removeHerd(id) {
-    if (!window.confirm("Remove this herd? Its paddock and crop assignments will be cleared.")) return;
-    const orders = {
-      ...farm.planner.orders,
-    };
+    const linkedCrops = farm.crops.filter((crop) => crop.herdId === id);
+
+    if (linkedCrops.length) {
+      window.alert("Reassign or remove this herd's crops before deleting the herd.");
+      return;
+    }
+
+    if (!window.confirm("Remove this herd? Its paddock assignments and grazing queue will be cleared.")) return;
+
+    const orders = { ...farm.planner.orders };
     delete orders[id];
+
     onChange({
       ...farm,
       herds: farm.herds.filter((herd) => herd.id !== id),
-
       paddocks: farm.paddocks.map((paddock) =>
-        paddock.herdId === id
-          ? {
-              ...paddock,
-              herdId: "",
-            }
-          : paddock,
-      ),
-
-      crops: farm.crops.map((crop) =>
-        crop.herdId === id
-          ? {
-              ...crop,
-              herdId: "",
-            }
-          : crop,
+        paddock.herdId === id ? { ...paddock, herdId: "" } : paddock,
       ),
       planner: {
         ...farm.planner,
@@ -77,22 +61,19 @@ export default function HerdsEditor({ farm, onChange, showCalculations = false, 
     });
   }
 
-  // Each herd either has their own grazing area or all paddocks are shared. 
-  const groups = planningGroups(farm);
   return (
     <div className="grid min-w-0 gap-5">
       {!farm.herds.length && (
         <Notice>Add your herds or mobs so feed requirements and crop feeding rates can be calculated.</Notice>
       )}
 
-      {/* Farm Info reuses the same editor in a wider layout. */}
       <div className={singleColumn ? "grid gap-5" : "grid gap-5 md:grid-cols-2"}>
-        {groups.map((herd) => (
+        {farm.herds.map((herd) => (
           <HerdDataCard
             key={herd.id}
             herd={herd}
             farm={farm}
-            today={today}
+            metric={metrics?.[herd.id]}
             showCalculations={showCalculations}
             onChange={updateHerd}
             onRemove={removeHerd}
@@ -108,18 +89,16 @@ export default function HerdsEditor({ farm, onChange, showCalculations = false, 
   );
 }
 
-function HerdDataCard({ herd, farm, onChange, onRemove, showCalculations, today }) {
-  const area = herd.totalArea;
-  const dailyHa = calculateTotalHa24h(area, farm.settings.roundLength);
-  const pasture = calculatePastureKgDM({
-    totalHa24h: dailyHa,
-    ...farm.settings,
-    animals: herd.animals,
-  });
-  const crop = cropIntakeForHerd(farm, herd.id, today);
-  const offered = pasture === null ? null : pasture + crop;
-  const difference = calculateFeedDifference(herd.targetKgDMDay, offered);
+function HerdDataCard({ herd, farm, onChange, onRemove, showCalculations, metric }) {
+  const area = metric?.area;
+  const pasture = metric?.pasture;
+  const crop = metric?.crop;
+  const offered = metric?.offered;
+  const difference = metric?.difference;
   const change = (field, value) => onChange(herd.id, field, value);
+
+  const metricValue = (value) => (value === null || value === undefined ? "—" : displayNumber(value));
+
   return (
     <Card className="@container border-t-3 border-t-herd-accent" data-herd-colour={herd.colour}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
@@ -160,7 +139,7 @@ function HerdDataCard({ herd, farm, onChange, onRemove, showCalculations, today 
 
           <InputField
             type="number"
-            label="Target intake animal"
+            label="Target intake / animal"
             value={herd.targetKgDMDay}
             onChange={(e) => change("targetKgDMDay", e.target.value)}
             unit="kgDM/day"
@@ -180,22 +159,25 @@ function HerdDataCard({ herd, farm, onChange, onRemove, showCalculations, today 
         </div>
       </div>
 
-      {/* Farm Info shows feed calculations. */}
       {showCalculations && (
         <>
           <div className="mt-4 grid grid-cols-4 gap-1.5 @sm:mt-5 @sm:gap-2">
-            <Metric unit="kgDM/animal/day" label="Pasture" value={displayNumber(pasture)} />
-            <Metric unit="kgDM/animal/day" label="Crop today" value={displayNumber(crop)} />
-            <Metric unit="kgDM/animal/day" label="Total offered" value={displayNumber(offered)} />
+            <Metric unit="kgDM/day" label="Pasture" value={metricValue(pasture)} />
+            <Metric unit="kgDM/day" label="Crop today" value={metricValue(crop)} />
+            <Metric unit="kgDM/day" label="Total offered" value={metricValue(offered)} />
             <Metric
-              unit="kgDM/animal/day"
+              unit="kgDM/day"
               label="Difference from target"
-              value={difference === null ? "—" : `${difference > 0 ? "+" : ""}${displayNumber(difference)}`}
+              value={
+                difference === null || difference === undefined
+                  ? "—"
+                  : `${difference > 0 ? "+" : ""}${displayNumber(difference)}`
+              }
             />
           </div>
 
           <p className="mt-3 mb-0 text-xs leading-relaxed text-muted">
-            Pasture = ({displayNumber(area, 2)} ha ÷ {farm.settings.roundLength || "—"} days) × (
+            Pasture = ({area === null || area === undefined ? "—" : displayNumber(area, 2)} ha ÷ {farm.settings.roundLength || "—"} days) × (
             {farm.settings.targetCover} − {farm.settings.residualKgDmHa}) ÷ {herd.animals || "—"} animals.
           </p>
         </>
