@@ -50,20 +50,52 @@
   --color-purple-herd-soft: #f5eff9;
   --font-sans: system-ui, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+   /* Small interface text stays fixed for consistency/readability. */
   --text-micro: 0.625rem;
   --text-tiny: 0.6875rem;
   --text-caption: 0.8125rem;
   --text-body: 0.9375rem;
-  --text-section: 1.375rem;
-  --text-metric: 1.625rem;
-  --text-page: clamp(1.875rem, 3vw, 2.5rem);
-  --text-hero: clamp(2.5rem, 4vw, 4.125rem);
+
+  /* Larger display text scales smoothly with the viewport.
+     MAX values preserve the existing desktop sizes. */
+  --text-section: clamp(
+    1.125rem,
+    calc(1.032rem + 0.381vw),
+    1.375rem
+  );
+
+  --text-metric: clamp(
+    1.125rem,
+    calc(0.939rem + 0.762vw),
+    1.625rem
+  );
+
+  --text-feature: clamp(
+    1rem,
+    calc(0.814rem + 0.762vw),
+    1.5rem
+  );
+
+  --text-page: clamp(
+    1.875rem,
+    3vw,
+    2.5rem
+  );
+
+  --text-hero: clamp(
+    2.5rem,
+    4vw,
+    4.125rem
+  );
+
   --radius-control: 0.5rem;
   --radius-panel: 0.625rem;
   --radius-card: 0.75rem;
   --radius-dialog: 0.875rem;
+
   --spacing-control: 2.8125rem;
   --spacing-sidebar: 14.875rem;
+
   --container-mobile: 20rem;
   --container-setup-nav: 14rem;
   --container-setup-nav-wide: 17.5rem;
@@ -71,8 +103,10 @@
   --container-dialog: 46.25rem;
   --container-schedule: 15rem;
   --container-break: 11rem;
+
   --shadow-dialog: 0 1.25rem 5rem #17311d33;
   --shadow-selection: 0 0.25rem 0.625rem #2f6f3e14;
+
   --breakpoint-xs: 30rem;
   --breakpoint-sm: 37.5rem;
   --breakpoint-md: 51.25rem;
@@ -89,7 +123,10 @@
 }
 
 @layer base {
-  html { color-scheme: light; }
+  html {
+    color-scheme: light;
+  }
+
   body {
     min-width: var(--container-mobile);
     background: var(--color-canvas);
@@ -97,26 +134,63 @@
     font-synthesis: none;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3 {
+
+  h1,
+  h2,
+  h3 {
     color: var(--color-brand-dark);
     font-weight: var(--font-weight-bold);
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
   }
-  h1 { font-size: var(--text-page); }
-  h2 { font-size: var(--text-section); margin-bottom: calc(var(--spacing) * 4); }
-  h3 { font-size: var(--text-lg); margin-bottom: calc(var(--spacing) * 4); }
-  p { margin-bottom: calc(var(--spacing) * 4); }
-  a { color: var(--color-brand); text-underline-offset: calc(var(--spacing) * 0.75); }
-  button, select, summary { cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: 0.5; }
-  svg { flex-shrink: 0; }
-  :where(button, input, select, textarea, a, summary, [tabindex]):focus-visible {
+
+  h1 {
+    font-size: var(--text-page);
+  }
+
+  h2 {
+    font-size: var(--text-section);
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+  h3 {
+    font-size: var(--text-lg);
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+  p {
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+  a {
+    color: var(--color-brand);
+    text-underline-offset: calc(var(--spacing) * 0.75);
+  }
+  button,
+  select,
+  summary {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  svg {
+    flex-shrink: 0;
+  }
+  :where(
+    button,
+    input,
+    select,
+    textarea,
+    a,
+    summary,
+    [tabindex]
+  ):focus-visible {
     outline: calc(var(--spacing) * 0.75) solid var(--color-focus);
     outline-offset: calc(var(--spacing) * 0.75);
   }
   /* Tailwind's reset removes the native dialog margin. Keep dialogs centred. */
-  dialog { margin: auto; }
+  dialog {
+    margin: auto;
+  }
   [data-herd-colour] {
     --herd-accent: var(--color-brand);
     --herd-colour: var(--color-green-herd);
@@ -138,7 +212,9 @@
     --herd-soft: var(--color-purple-herd-soft);
   }
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
       animation: none !important;
       transition: none !important;
       scroll-behavior: auto !important;
@@ -163,5 +239,7 @@
     background: var(--color-green-herd);
     border-radius: var(--radius-sm);
   }
-  .setup-progress::-moz-progress-bar { background: var(--color-green-herd); }
+  .setup-progress::-moz-progress-bar {
+    background: var(--color-green-herd);
+  }
 }
