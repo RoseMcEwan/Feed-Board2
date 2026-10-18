@@ -6,7 +6,7 @@ import PaddocksTable from "../../components/featureComponents/farmInfo/PaddocksT
 import CropsEditor from "../../components/featureComponents/farmInfo/CropsEditor.jsx";
 import Notice from "../../components/primaryUI/Notice.jsx";
 import { InputField } from "../../components/primaryUI/FormFields.jsx";
-import { grazingArea, totalArea, missingAssignments } from "../../utilis/farmSelectors.js";
+import useFarmCalculations from "../../hooks/useFarmCalculations.js";
 import { displayNumber } from "../../utilis/numbers.js";
 import { validateHerds, validatePaddocks, validateCrops } from "../../utilis/validation.js";
 import Metric from "../../components/primaryUI/Metric.jsx";
@@ -32,19 +32,16 @@ const farmTabs = [
   },
 ];
 
-export default function FarmInfoPage({ farm, onChange, today }) {
+export default function FarmInfoPage({ farm, onChange, today, userId }) {
   const { tab: routeTab } = useParams();
+  const calculations = useFarmCalculations({ farm, userId, today });
 
   // Default routes to the Herds tab.
   const activeTab = farmTabs.find(({ key }) => key === routeTab) ?? farmTabs[0];
-
   const tab = activeTab.key;
   const errors = activeTab.validate(farm);
-
-  const unassignedCount = missingAssignments(farm).length;
-  const totalHa = totalArea(farm);
-  const grazingHa = grazingArea(farm);
-  const excludedHa = totalHa - grazingHa;
+  const summary = calculations.data?.summary;
+  const unassignedCount = summary?.unassignedPaddockIds.length ?? 0;
 
   return (
     <>
@@ -75,6 +72,10 @@ export default function FarmInfoPage({ farm, onChange, today }) {
       </nav>
 
       <div className="grid min-w-0 gap-3 sm:gap-5">
+        {calculations.error && (
+          <Notice variant="warning">Feed calculations are unavailable: {calculations.error}</Notice>
+        )}
+
         <div className="flex flex-wrap items-start justify-between gap-4 sm:mb-4 sm:flex-nowrap sm:items-center">
           <h2 className="mb-0 sr-only md:not-sr-only">{activeTab.heading}</h2>
 
@@ -116,16 +117,16 @@ export default function FarmInfoPage({ farm, onChange, today }) {
           </Notice>
         )}
 
-        {tab === "herds" && <HerdsEditor farm={farm} onChange={onChange} today={today} showCalculations />}
+        {tab === "herds" && (
+          <HerdsEditor farm={farm} onChange={onChange} metrics={calculations.data?.herdMetrics} showCalculations />
+        )}
 
         {tab === "paddocks" && (
           <>
             <div className="grid grid-cols-3 gap-2 sm:gap-4">
-              <Metric label="Total farm area" value={`${displayNumber(totalHa, 2)} ha`} />
-
-              <Metric label="Available for grazing" value={`${displayNumber(grazingHa, 2)} ha`} />
-
-              <Metric label="Excluded from pasture" value={`${displayNumber(excludedHa, 2)} ha`} />
+              <Metric label="Total farm area" value={`${displayNumber(summary?.totalHa, 2)} ha`} />
+              <Metric label="Available for grazing" value={`${displayNumber(summary?.grazingHa, 2)} ha`} />
+              <Metric label="Excluded from pasture" value={`${displayNumber(summary?.excludedHa, 2)} ha`} />
             </div>
             <PaddocksTable farm={farm} onChange={onChange} />
             <details className="border-t border-info-line py-4">
@@ -137,7 +138,9 @@ export default function FarmInfoPage({ farm, onChange, today }) {
           </>
         )}
 
-        {tab === "crops" && <CropsEditor farm={farm} onChange={onChange} today={today} />}
+        {tab === "crops" && (
+          <CropsEditor farm={farm} onChange={onChange} today={today} metrics={calculations.data?.cropMetrics} />
+        )}
       </div>
     </>
   );
