@@ -3,7 +3,7 @@ import { InputField, SelectField, CheckboxField } from "../../primaryUI/FormFiel
 import Button from "../../primaryUI/buttons/Button.jsx";
 import Notice from "../../primaryUI/Notice.jsx";
 import { Plus, Trash2 } from "lucide-react";
-import { CROP_TYPES, createPaddock, syncCropRecords } from "../../../data/farmDefaults.js";
+import { CROP_TYPES, createPaddock } from "../../../data/farmDefaults.js";
 
 const exclusionReasons = [
   { value: "", label: "Choose reason" },
@@ -38,11 +38,12 @@ function changePaddock(farm, id, field, value) {
     return next;
   });
 
-  return syncCropRecords({
+  return {
     ...farm,
     paddocks,
-  });
+  };
 }
+
 
 export default function PaddocksTable({ farm, onChange, simple = false }) {
   const herdOptions = [
@@ -55,26 +56,6 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
 
   function change(id, field, value) {
     const current = farm.paddocks.find((paddock) => paddock.id === id);
-
-  function changeCrop(paddockId, field, value) {
-  const synced = syncCropRecords(farm);
-
-  onChange({
-    ...synced,
-    crops: synced.crops.map((crop) => {
-      if (crop.paddockId !== paddockId) {
-        return crop;
-      }
-
-      return {
-        ...crop,
-        [field]: value,
-
-        ...(field === "cropType" && value !== "Other" ? { otherCropType: "" } : {}),
-      };
-    }),
-  });
-}
 
     // Confirm before an edit removes an existing crop feeding plan.
     const removesCrop =
@@ -101,19 +82,34 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
     onChange(changePaddock(farm, id, field, value));
   }
 
-  // Removing a paddock also clears its linked crop record.
-  function remove(paddock) {
-    if (!window.confirm(`Remove ${paddock.name || "this paddock"} and any linked crop plan?`)) {
-      return;
-    }
+function changeCrop(paddockId, field, value) {
+  onChange({
+    ...farm,
+    crops: farm.crops.map((crop) =>
+      crop.paddockId === paddockId
+        ? {
+            ...crop,
+            [field]: value,
+            ...(field === "cropType" && value !== "Other"
+              ? { otherCropType: "" }
+              : {}),
+          }
+        : crop,
+    ),
+  });
+}
 
-    onChange(
-      syncCropRecords({
-        ...farm,
-        paddocks: farm.paddocks.filter((item) => item.id !== paddock.id),
-      }),
-    );
+  // Removing a paddock also clears its linked crop record.
+function remove(paddock) {
+  if (!window.confirm(`Remove ${paddock.name || "this paddock"} and any linked crop plan?`)) {
+    return;
   }
+
+  onChange({
+    ...farm,
+    paddocks: farm.paddocks.filter((item) => item.id !== paddock.id),
+  });
+}
 
   return (
     <div className="@container/paddocks grid min-w-0 gap-2.5">
@@ -212,7 +208,7 @@ export default function PaddocksTable({ farm, onChange, simple = false }) {
                                 required
                               />
 
-                              {crop.cropType === "Other" && (
+                              {crop?.cropType === "Other" && (
                                 <InputField
                                   label={`Other crop type for ${name}`}
                                   labelHidden
