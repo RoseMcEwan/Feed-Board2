@@ -4,7 +4,6 @@ import assert from "node:assert/strict";
 import { createEmptyFarm, syncCropRecords } from "../src/data/farmDefaults.js";
 import { parsePaddockText } from "../src/utilis/parsePaddocks.js";
 import { validateFarm } from "../src/utilis/validation.js";
-import { addCalendarDays } from "../src/utilis/calendarDates.js";
 import { readDraft, writeDraft, clearDraft } from "../src/services/draftStorage.js";
 
 // Creates a complete valid farm for frontend validation tests.
