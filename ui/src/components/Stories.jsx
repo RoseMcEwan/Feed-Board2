@@ -9,8 +9,8 @@ import Metric from "./primaryUI/Metric.jsx";
 import PageHeader from "./primaryUI/PageHeader.jsx";
 import DataTable, { TableHeader, TableCell } from "./primaryUI/DataTable.jsx";
 import { InputField, SelectField, TextareaField, CheckboxField } from "./primaryUI/FormFields.jsx";
-import SettingsFields from "./featureComponents/farm/forms/FarmSettingsFields.jsx";
-
+import SettingsFields from "./featureComponents/farmInfo/FarmSettingsFields.jsx";
+import CropsEditor from "./featureComponents/farmInfo/CropsEditor.jsx";
 
 function StorySection({ title, children }) {
   return (
@@ -97,9 +97,7 @@ export function Stories() {
           <div className="space-y-3">
             <Notice variant="info">Info</Notice>
 
-            <Notice variant="warning">
-              Warning — check paddock information
-            </Notice>
+            <Notice variant="warning">Warning — check paddock information</Notice>
 
             <Notice variant="error">Error — information is required</Notice>
 
@@ -169,32 +167,19 @@ export function Stories() {
           <div className="grid gap-4 sm:grid-cols-2">
             <Metric label="Pasture intake" value="14.2" unit="kgDM/cow/day" />
 
-            <Metric
-              label="Feed difference"
-              value="-2.1"
-              unit="kgDM/cow/day"
-              tone="warning"
-            />
+            <Metric label="Feed difference" value="-2.1" unit="kgDM/cow/day" tone="warning" />
           </div>
         </StoryRow>
 
         <StoryRow title="Compact on mobile">
-          <Metric
-            label="Days remaining"
-            value="34"
-            unit="days"
-            compactOnMobile
-          />
+          <Metric label="Days remaining" value="34" unit="days" compactOnMobile />
         </StoryRow>
       </StorySection>
 
       {/* PAGE HEADER */}
       <StorySection title="Page header">
         <StoryRow title="Standard">
-          <PageHeader
-            title="Farm information"
-            subtitle="Manage your herds, paddocks and crops."
-          >
+          <PageHeader title="Farm information" subtitle="Manage your herds, paddocks and crops.">
             <Button variant="primary">Save changes</Button>
           </PageHeader>
         </StoryRow>
@@ -203,10 +188,7 @@ export function Stories() {
       {/* DATA TABLE */}
       <StorySection title="Data table">
         <StoryRow title="Standard">
-          <DataTable
-            label="Example paddock table"
-            caption="Example paddock names and hectares"
-          >
+          <DataTable label="Example paddock table" caption="Example paddock names and hectares">
             <thead>
               <tr>
                 <TableHeader>Paddock</TableHeader>
@@ -232,66 +214,61 @@ export function Stories() {
         </StoryRow>
       </StorySection>
 
-{/* FORM FIELDS */}
-<StorySection title="Form fields">
-  <StoryRow title="Fields">
-    <div className="grid max-w-md gap-4">
-      <InputField
-        label="InputField"
-        value="Rose's Farm"
-        onChange={() => {}}
-      />
+      {/* FORM FIELDS */}
+      <StorySection title="Form fields">
+        <StoryRow title="Fields">
+          <div className="grid max-w-md gap-4">
+            <InputField label="InputField" value="Rose's Farm" onChange={() => {}} />
 
-      <InputField
-        label="InputField"
-        type="number"
-        unit="kgDM/ha"
-        value="1550"
-        onChange={() => {}}
-      />
+            <InputField label="InputField" type="number" unit="kgDM/ha" value="1550" onChange={() => {}} />
 
-      <SelectField
-        label="SelectField"
-        value="Dairy"
-        options={["Dairy", "Sheep / Beef"]}
-        onChange={() => {}}
-      />
+            <SelectField label="SelectField" value="Dairy" options={["Dairy", "Sheep / Beef"]} onChange={() => {}} />
 
-      <TextareaField
-        label="TextareaField"
-        value={"Front 4.2\nRiver 3.8"}
-        onChange={() => {}}
-      />
+            <TextareaField label="TextareaField" value={"Front 4.2\nRiver 3.8"} onChange={() => {}} />
 
-      <CheckboxField
-        label="CheckboxField"
-      />
-    </div>
-  </StoryRow>
-</StorySection>
+            <CheckboxField label="CheckboxField" />
+          </div>
+        </StoryRow>
+      </StorySection>
 
-{/* SETTINGS FIELDS */}
-<StorySection
-  title="Settings fields"
-  uses="InputField · CheckboxField (FormFields)"
->
-  <StoryRow title="Default">
-    <div className="@container max-w-2xl">
-      <SettingsFields
-        settings={{
-          farmType: "dairy",
-          farmName: "Rose's Farm",
-          assignHerds: true,
-          latitude: "-43.5321",
-          longitude: "172.6362",
-          targetCover: "2900",
-          residualKgDmHa: "1550",
-        }}
-      />
-    </div>
-  </StoryRow>
-</StorySection>
-      
+      {/* SETTINGS FIELDS */}
+      <StorySection title="Settings fields" uses="InputField · CheckboxField (FormFields)">
+        <StoryRow title="Default">
+          <div className="@container max-w-2xl">
+            <SettingsFields
+              settings={{
+                farmType: "dairy",
+                farmName: "Rose's Farm",
+                assignHerds: true,
+                latitude: "-43.5321",
+                longitude: "172.6362",
+                targetCover: "2900",
+                residualKgDmHa: "1550",
+                paddockToleranceHa: "0.3",
+                schedule: {
+                  am: "05:00",
+                  pm: "13:30",
+                },
+              }}
+            />
+          </div>
+        </StoryRow>
+      </StorySection>
+
+      {/* crop editor */}
+      <StorySection title="Crop editor" uses="InputField · SelectField">
+        <StoryRow title="Default">
+          <fieldset disabled>
+            <CropsEditor
+              farm={{
+                crops: [],
+                paddocks: [],
+                herds: [],
+              }}
+            />
+          </fieldset>
+        </StoryRow>
+      </StorySection>
     </div>
   );
 }
