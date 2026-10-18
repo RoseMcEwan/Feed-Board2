@@ -1,17 +1,32 @@
 {
-  "name": "backend",
+  "name": "feedboard-api",
   "version": "1.0.0",
-  "description": "Existing FeedBoard development fixtures and optional weather proxy. Not the final SQL backend.",
-  "main": "server/server.js",
+  "private": true,
+  "description": "FeedBoard API",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js",
+    "test:api": "node --env-file=.env.test --test tests/api.integration.js",
+    "secret": "node -e \"console.log(require('node:crypto').randomBytes(48).toString('hex'))\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "argon2": "0.45.1",
+    "cors": "2.8.5",
+    "dotenv": "17.4.2",
+    "express": "5.2.1",
+    "express-mysql-session": "3.0.3",
+    "express-rate-limit": "8.6.2",
+    "express-session": "1.19.0",
+    "helmet": "8.3.0",
+    "mysql2": "3.24.4"
+  },
+  "overrides": {
+    "express-mysql-session": {
+      "mysql2": "$mysql2",
+      "debug": "^4.4.3"
+    }
   }
 }
